@@ -58,9 +58,50 @@ function init() {
                 UVindexEl.append(UVindex);
 
             })
+        });
 
+    let idCity = response.data.id;
+    let forecastQueryURL = "https://api.openweathermap.org/data/2.5/forecast?id=" + cityID + "&appid=" + APIKey;
 
-        })
+    axios.get(forecastQueryURL)
+    .then(function(response){
 
+        console.log(reponse);
+
+        const forecastEl = document.querySelectorAll(".forecast");
+
+        for (i = 0; i < forecastEl.length; i++) {
+            forecastEl[i].innerHTML = '';
+
+            const indexForecast = i*8 + 4;
+            const dateForecast = new Date(response.data.list[indexForecast].dt * 1000)
+            const dateForecastEl = document.createElement("p");
+            const dayForecast = forecastDate.getDate();
+            const monthForecast = forecastDate.getMonth() + 1;
+            const yearForecast = forecastDate.getFullYear();
+
+            dateForecastEl.setAttribute("class", "mt-3 mb-0 forecast-date");
+
+            dateForecastEl.innerHTML = monthForecast + "/" + dayForecast + "/" + yearForecast;
+            forecastEl[i].append(dateForecastEl);
+
+            const weatherForecastEl = document.createElemnt("img");
+
+            weatherForecastEl.setAttribute("src", "https://openweathermap.org/img/wn/" + response.data.list[forecastIndex].weather[0].icon + "@2x.png");
+            weatherForecastEl.setAttribute("alt", response.data.list[forecastIndex].weather[0].description);
+
+            forecastEl[i].append(weatherForecastEl);
+
+            const tempForecastEl = document.createElement("p");
+
+            tempForecastEl.innerHTML = "Temperature: " + k2f(response.data.list[forecastIndex].main.temp) + " &#176F";
+            forecastEl[i].append(tempForecastEl);
+
+            const humidityForecastEl = document.createElement("p");
+            
+            humidityForecastEl.innerHTML = "Humidity: " + response.data.list[forecastIndex].main.humidity + "%";
+            forecastEl[i].append(humidityForecastEl);
+        }
+    });
 }
 init();
